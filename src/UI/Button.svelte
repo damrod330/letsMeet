@@ -1,8 +1,8 @@
 <script>
-  export let type;
+  export let type = "button";
   export let caption;
-  export let href;
-  export let className;
+  export let href = null;
+  export let className = null;
 </script>
 
 <style>
@@ -17,6 +17,7 @@
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.26);
     cursor: pointer;
     text-decoration: none;
+    margin: 0.3rem;
   }
 
   button:focus {
@@ -27,8 +28,8 @@
   button:active,
   a:hover,
   a:active {
-    background: #e40763;
-    border-color: #e40763;
+    background: #8a0e41;
+    border-color: #8a0e41;
     box-shadow: 1px 1px 8px rgba(77, 51, 51, 0.26);
   }
 
@@ -84,7 +85,11 @@
 </style>
 
 {#if href}
-  <a class={className} {href} on:click>{caption}</a>
+  <a class={className} {href} on:click>
+    <slot />
+  </a>
 {:else}
-  <button class={className} {type} on:click>{caption}</button>
+  <button class={className} {type} on:click>
+    <slot />
+  </button>
 {/if}

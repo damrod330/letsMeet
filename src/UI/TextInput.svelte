@@ -1,10 +1,10 @@
 <script>
   export let value;
-  export let controlType;
+  export let controlType = null;
+  export let rows = null;
   export let type = "text";
   export let id;
   export let label;
-  export let rows = 4;
 </script>
 
 <style>
@@ -14,10 +14,10 @@ textarea {
   width: 100%;
   font: inherit;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 1px solid #ccc;
   border-radius: 3px 3px 0 0;
   background: white;
-  padding: 0.15rem 0.25rem;
+  padding: 0.35rem 0.7rem;
   transition: border-color 0.1s ease-out;
 }
 
@@ -28,15 +28,16 @@ textarea:focus {
 }
 
 label {
+  color: #8a4a63;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
+  margin-left: 0.7rem;
   width: 100%;
 }
 
 .form-control {
   padding: 0.5rem 0;
   width: 100%;
-  margin: 0.25rem 0;
 }
 </style>
 
