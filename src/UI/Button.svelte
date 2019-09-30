@@ -1,8 +1,8 @@
 <script>
   export let type = "button";
-  export let caption;
   export let href = null;
   export let className = null;
+  export let disabled = false;
 </script>
 
 <style>
@@ -85,11 +85,11 @@
 </style>
 
 {#if href}
-  <a class={className} {href} on:click>
+  <a class={className} {href} {disabled} on:click>
     <slot />
   </a>
 {:else}
-  <button class={className} {type} on:click>
+  <button class={className} {type} {disabled} on:click>
     <slot />
   </button>
 {/if}
