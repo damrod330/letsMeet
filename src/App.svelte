@@ -4,7 +4,7 @@
   import EditMeetup from "./Meetups/EditMeetup.svelte";
   import Button from "./UI/Button.svelte";
 
-  let currentPage = "meetupgrid";
+  let editMode = null;
 
   let meetups = [
     {
@@ -29,19 +29,24 @@
     }
   ];
 
-  function addMeetup() {
+  function addMeetup(event) {
     const newMeetup = {
       id: Math.random().toString(),
-      title: title,
-      subtitle: subtitle,
-      description: description,
-      address: address,
-      imageUrl: imageUrl,
-      contactEmail: contactEmail
+      title: event.detail.title,
+      subtitle: event.detail.subtitle,
+      description: event.detail.description,
+      address: event.detail.address,
+      imageUrl: event.detail.imageUrl,
+      contactEmail: event.detail.contactEmail
     };
 
     // meetups.push(newMeetup); // does not WORK!
     meetups = [newMeetup, ...meetups];
+    editMode = null;
+  }
+
+  function cancelEdit() {
+    editMode = null;
   }
 
   function toggleFavorite(event) {
@@ -59,19 +64,25 @@
   main {
     margin-top: 5rem;
   }
+
+  .meetup-controls {
+    margin: 1rem;
+  }
 </style>
 
 <Header />
 <main>
-  {#if currentPage === 'editmeetup'}
-    <EditMeetup />
-  {:else}
+  {#if editMode === 'create'}
+    <EditMeetup on:save={addMeetup} on:cancel={cancelEdit} />
+  {/if}
+  <div class="meetup-controls">
     <Button
       on:click={() => {
-        currentPage = 'editmeetup';
+        editMode = 'create';
       }}>
       Create new meetup
     </Button>
-    <MeetupGrid {meetups} on:togglefavorite={toggleFavorite} />
-  {/if}
+  </div>
+  <MeetupGrid {meetups} on:togglefavorite={toggleFavorite} />
+
 </main>

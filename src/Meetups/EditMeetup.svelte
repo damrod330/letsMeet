@@ -2,6 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import TextInput from "../UI/TextInput.svelte";
   import Button from "../UI/Button.svelte";
+  import Modal from "../UI/Modal.svelte";
 
   export let editMode = false;
   export let title = "",
@@ -12,46 +13,31 @@
     contactEmail = "";
 
   const dispatch = createEventDispatcher();
+
+  function submitForm() {
+    dispatch("save", {
+      title: title,
+      subtitle: subtitle,
+      description: description,
+      imageUrl: imageUrl,
+      address: address,
+      contactEmail: contactEmail
+    });
+  }
+
+  function cancel() {
+    dispatch("cancel");
+  }
 </script>
 
 <style>
   form {
-    flex-grow: 1;
-  }
-
-  h1 {
-    text-align: center;
-  }
-  section {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    width: 40rem;
-    box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.26);
-    border-radius: 5px;
-    background: white;
-    margin: auto;
-  }
-
-  footer {
-    margin-top: 2rem;
+    width: 100%;
   }
 </style>
 
-<h1>Create new meetup</h1>
-<section>
-
-  <form
-    on:submit|preventDefault={() => {
-      dispatch('submitmeetup', {
-        title: title,
-        subtitle: subtitle,
-        description: description,
-        imageUrl: imageUrl,
-        address: address,
-        contactEmail: contactEmail
-      });
-    }}>
+<Modal title="Edit Meetup Data" on:cancel>
+  <form>
     <TextInput
       id="title"
       label="Title"
@@ -85,18 +71,10 @@
       value={contactEmail}
       type="email"
       on:input={e => (contactEmail = e.target.value)} />
-    <footer>
-      <Button type="submit" className="success">
-        {editMode ? 'Save changes' : 'Create new meetup'}
-      </Button>
-      <Button
-        className="outline"
-        on:click={() => {
-          dispatch('cancel');
-        }}>
-        Cancel
-      </Button>
-    </footer>
-
   </form>
-</section>
+
+  <div slot="footer">
+    <Button type="button" className="outline" on:click={cancel}>Cancel</Button>
+    <Button type="button" on:click={submitForm}>Save</Button>
+  </div>
+</Modal>
