@@ -5,11 +5,39 @@
   import meetups from "./Meetups/meetups-store.js";
   import EditMeetup from "./Meetups/EditMeetup.svelte";
   import Button from "./UI/Button.svelte";
+  import LoadingSpinner from "./UI/LoadingSpinner.svelte";
+  import Error from "./UI/Error.svelte";
 
   let editMode = null;
   let editedId = null;
   let page = "overview";
   let pageData = {};
+  let isLoading = true;
+  let error = null;
+
+  fetch("https://let-s-meet-82eef.firebaseio.com/meetups.json")
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("Fetching meetups failed.");
+      }
+      return res.json();
+    })
+    .then(data => {
+      const loadedMeetups = [];
+      for (const key in data) {
+        loadedMeetups.push({
+          ...data[key],
+          id: key
+        });
+      }
+      meetups.setMeetups(loadedMeetups.reverse());
+      isLoading = false;
+    })
+    .catch(err => {
+      isLoading = false;
+      error = err;
+      console.log(err);
+    });
 
   function saveMeetup() {
     editMode = null;
@@ -18,7 +46,7 @@
 
   function startEdit(event) {
     editMode = "edit";
-    editedId = event.detail;
+    editedId = event.detail ? event.detail : null;
   }
 
   function cancelEdit() {
@@ -41,12 +69,16 @@
   main {
     margin-top: 4rem;
   }
-
-  .meetup-controls {
-    margin: 1rem;
-    margin-top: 5rem;
-  }
 </style>
+
+{#if error}
+  <Error
+    message={error.message}
+    on:cancel={() => {
+      console.log('click');
+      error = null;
+    }} />
+{/if}
 
 <Header />
 <main>
@@ -54,18 +86,14 @@
     {#if editMode === 'edit'}
       <EditMeetup id={editedId} on:save={saveMeetup} on:cancel={cancelEdit} />
     {/if}
-    <div class="meetup-controls">
-      <Button
-        on:click={() => {
-          editMode = 'edit';
-        }}>
-        Create new meetup
-      </Button>
-    </div>
-    <MeetupGrid
-      meetups={$meetups}
-      on:showdetails={showDetails}
-      on:edit={startEdit} />
+    {#if !isLoading}
+      <MeetupGrid
+        meetups={$meetups}
+        on:showdetails={showDetails}
+        on:edit={startEdit} />
+    {:else}
+      <LoadingSpinner />
+    {/if}
   {:else}
     <MeetupDetails id={pageData.id} on:close={showOverview} />
   {/if}

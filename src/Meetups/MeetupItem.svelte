@@ -3,6 +3,7 @@
   import Badge from "../UI/Badge.svelte";
   import meetups from "./meetups-store.js";
   import { createEventDispatcher } from "svelte";
+  import Loadingspinner from "../UI/LoadingSpinner.svelte";
 
   export let id;
   export let title;
@@ -13,7 +14,29 @@
   export let contactEmail;
   export let isFavorite;
 
+  let isLoading = false;
+
   const dispatch = createEventDispatcher();
+
+  function toggleFavorite() {
+    isLoading = true;
+    fetch(`https://let-s-meet-82eef.firebaseio.com/meetups/${id}.json`, {
+      method: "PATCH",
+      body: JSON.stringify({ isFavorite: !isFavorite }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("An error occured, please try again!");
+        }
+        isLoading = false;
+        meetups.toggleFavorite(id);
+      })
+      .catch(err => {
+        isLoading = false;
+        console.log(err);
+      });
+  }
 </script>
 
 <style>
@@ -103,12 +126,17 @@
       on:click={() => dispatch('edit', id)}>
       Edit
     </Button>
-    <Button
-      className={isFavorite ? null : 'success'}
-      type="button"
-      on:click={() => meetups.toggleFavorite(id)}>
-      {isFavorite ? 'Unfavorite' : 'Favorite'}
-    </Button>
+    {#if isLoading}
+      <Loadingspinner/>
+    {:else}
+      <Button
+        className={isFavorite ? null : 'success'}
+        type="button"
+        on:click={toggleFavorite}>
+        {isFavorite ? 'Unfavorite' : 'Favorite'}
+      </Button>
+    {/if}
+
     <Button type="button" on:click={() => dispatch('showdetails', id)}>
       Show Details
     </Button>

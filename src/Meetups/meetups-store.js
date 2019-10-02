@@ -1,35 +1,33 @@
 import { writable } from "svelte/store"
 
-
-const meetupsStore = writable([
-    {
-        id: "m1",
-        title: "Coding Bootcamp",
-        subtitle: "Learn to code in 2 hours",
-        description: "In this meetup, we will learn stuff and it will be great!",
-        imageUrl: "https://picsum.photos/id/1075/1200",
-        address: "Wojska Polskiego 8, 41-205 Sosnowiec",
-        contactEmail: "learn.code@gmail.com",
-        isFavorite: false
-    },
-    {
-        id: "m2",
-        title: "Lear Svelte",
-        subtitle: "Learn Svelte!",
-        description: "Great place to get started learning Svelte.",
-        imageUrl: "https://picsum.photos/id/1076/1200",
-        address: "Wojska Polskiego 8, 41-205 Sosnowiec",
-        contactEmail: "svelte.code@test.com",
-        isFavorite: false
-    }
-]);
+// {
+//     id: "m1",
+//     title: "Coding Bootcamp",
+//     subtitle: "Learn to code in 2 hours",
+//     description: "In this meetup, we will learn stuff and it will be great!",
+//     imageUrl: "https://picsum.photos/id/1075/1200",
+//     address: "Wojska Polskiego 8, 41-205 Sosnowiec",
+//     contactEmail: "learn.code@gmail.com",
+//     isFavorite: false
+// },
+// {
+//     id: "m2",
+//     title: "Lear Svelte",
+//     subtitle: "Learn Svelte!",
+//     description: "Great place to get started learning Svelte.",
+//     imageUrl: "https://picsum.photos/id/1076/1200",
+//     address: "Wojska Polskiego 8, 41-205 Sosnowiec",
+//     contactEmail: "svelte.code@test.com",
+//     isFavorite: false
+// }
+const meetupsStore = writable([]);
 
 const customMeetupsStore = {
     subscribe: meetupsStore.subscribe,
+    setMeetups: (meetupsArray) => { meetupsStore.set(meetupsArray); },
     addMeetup: (meetupData) => {
         const newMeetup = {
             id: Math.random().toString(),
-            isFavorite: false,
             ...meetupData
         };
 
